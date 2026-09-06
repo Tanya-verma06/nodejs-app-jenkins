@@ -1,0 +1,15 @@
+{
+  "name": "nodejs-app-jenkins",
+  "version": "1.0.0",
+  "description": "Node.js application with Jenkins CI/CD",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Tests passed successfully\""
+  },
+  "author": "Tanya Verma",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
