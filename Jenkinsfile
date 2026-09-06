@@ -6,41 +6,57 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'Installing dependencies...'
                 sh 'npm ci'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
                 sh 'npm test'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Checking Node.js application...'
                 sh 'node --check app.js'
-                echo 'Build completed successfully!'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t nodejs-app-jenkins:latest .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    docker stop nodejs-app-jenkins || true
+                    docker rm nodejs-app-jenkins || true
+
+                    docker run -d \
+                        --name nodejs-app-jenkins \
+                        -p 3000:3000 \
+                        nodejs-app-jenkins:latest
+                '''
             }
         }
     }
 
     post {
         success {
-            echo 'CI Pipeline completed successfully!'
+            echo 'CI/CD PIPELINE SUCCESSFUL!'
+            echo 'Application deployed on port 3000'
         }
 
         failure {
-            echo 'CI Pipeline failed!'
+            echo 'CI/CD PIPELINE FAILED!'
         }
     }
 }
