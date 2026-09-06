@@ -6,43 +6,41 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    credentialsId: 'github-credentials',
-                    url: 'https://github.com/Tanya-verma06/nodejs-app-jenkins.git'
+                echo 'Checking out source code...'
+                checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'Installing Node.js dependencies...'
+                echo 'Installing dependencies...'
                 sh 'npm ci'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running application tests...'
+                echo 'Running tests...'
                 sh 'npm test'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building Node.js application...'
-                sh 'npm run start -- --help || true'
+                echo 'Checking Node.js application...'
+                sh 'node --check app.js'
                 echo 'Build completed successfully!'
             }
         }
-
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'CI Pipeline completed successfully!'
         }
 
         failure {
-            echo 'Pipeline failed!'
+            echo 'CI Pipeline failed!'
         }
     }
 }
